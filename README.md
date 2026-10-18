@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Factory Operations & Quality Control System
 
-First, run the development server:
+A full-stack factory operations and quality-control application developed for the Zapuza Technologies assignment.
+
+The application manages product registration, quality inspections, supervisor approvals, production operations, hold periods, and dispatch validation.
+
+## Features
+
+### 1. Product Management
+- Register products with unique serial numbers.
+- View registered products and their creation dates.
+- Prevent duplicate serial numbers.
+
+### 2. Quality Inspections
+- Record measurements for individual products.
+- Define minimum and maximum acceptable values.
+- Automatically determine PASS or FAIL based on the measured value.
+- View inspection history and results.
+
+### 3. Inspection Approvals
+- Review inspections awaiting a decision.
+- Approve or reject inspections.
+- Record the reviewer and rejection reason.
+- View approval history.
+
+### 4. Production Operations
+- Configure manufacturing steps and sequence numbers.
+- Start and complete production operations.
+- Enforce operation sequencing.
+- Configure and enforce operation hold periods.
+
+### 5. Dispatch Management
+- Review production and inspection readiness.
+- Require all operations to be completed.
+- Require operation hold periods to have elapsed.
+- Require a passing and approved Final PDI inspection.
+- Prevent duplicate dispatches.
+- Record the dispatcher and dispatch time.
+
+### 6. Dashboard
+- View product and inspection summaries.
+- Review production operation progress.
+- Navigate to the main application modules.
+
+## Technology Stack
+
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **Backend:** Next.js API Routes
+- **ORM:** Prisma
+- **Database:** SQLite
+- **Runtime:** Node.js
+
+## Prerequisites
+
+Install the following before running the application:
+
+- Node.js
+- npm
+
+## Installation and Setup
+
+### 1. Clone the repository
+
+```bash
+git clone <YOUR_PUBLIC_GITHUB_REPOSITORY_URL>
+cd zapuza-quality-system
+```
+
+Replace the repository URL with your actual GitHub repository URL.
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file in the project root:
+
+```env
+DATABASE_URL="file:./dev.db"
+```
+
+Do not commit secrets or private environment variables.
+
+### 4. Set up the database
+
+Apply the committed Prisma migrations:
+
+```bash
+npx prisma migrate deploy
+npx prisma generate
+```
+
+These commands assume the repository includes the required Prisma migration files.
+
+### 5. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the application:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Application Routes
 
-## Learn More
+| Route | Description |
+|---|---|
+| `/` | Dashboard |
+| `/products` | Product registration and listing |
+| `/inspections` | Quality inspection recording and history |
+| `/approvals` | Inspection review and decisions |
+| `/operations` | Production operation management |
+| `/dispatch` | Dispatch readiness and authorization |
 
-To learn more about Next.js, take a look at the following resources:
+## Dispatch Validation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Before creating a dispatch record, the backend validates the following conditions:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. The product exists.
+2. The product has not already been dispatched.
+3. At least one production operation is configured.
+4. Every operation is completed and its hold period has elapsed.
+5. A `Final PDI` inspection exists and has status `PASS`.
+6. The Final PDI inspection has supervisor approval with status `APPROVED`.
 
-## Deploy on Vercel
+Requests that fail these checks are rejected by the dispatch API.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Validation and Testing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Run the TypeScript check:
+
+```bash
+npx tsc --noEmit
+```
+
+Manually test the main workflows:
+
+- Register a product and verify duplicate serial numbers are rejected.
+- Record passing and failing inspections.
+- Approve and reject inspections.
+- Verify production operation sequence enforcement.
+- Verify hold-time restrictions.
+- Verify dispatch rejection when requirements are incomplete.
+- Verify successful dispatch for an eligible product.
+- Verify that a product cannot be dispatched twice.
+
+## Limitations
+
+This is an assignment implementation. Authentication, role-based authorization, production deployment hardening, and any additional workflows required by the complete assignment specification should be assessed before production use.
+
+## Author
+
+Add your name and relevant contact information before submission.
