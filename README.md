@@ -125,7 +125,7 @@ This implementation covers selected quality-control workflows and does not claim
 
 ## Demo Video
 
-Add the link to your recorded project walkthrough before submission.
+https://youtu.be/YVA43ZzeJ50
 
 ## Author
 
