@@ -48,3 +48,16 @@ next-env.d.ts
 /dev.db-journal
 /prisma/dev.db
 /prisma/dev.db-journal
+
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.sqlite3-journal
+.venv/
+venv/
+django-venv/
+.env
+.env.*
+!.env.example

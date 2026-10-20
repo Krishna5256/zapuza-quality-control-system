@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapuza Quality Control</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fa; color: #202b3c; }
+        header { background: #173b63; color: white; padding: 22px 5%; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 24px; }
+        header a { color: white; text-decoration: none; }
+        main { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
+        .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 3px 12px #0000000b; }
+        .card p { color: #64748b; margin: 0 0 10px; }
+        .number { font-size: 30px; font-weight: bold; }
+        section { background: white; margin-top: 25px; padding: 22px; border-radius: 12px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; min-width: 550px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5eaf0; }
+        th { color: #64748b; font-size: 13px; }
+        .pass { color: #16804a; font-weight: bold; }
+        .fail { color: #c62828; font-weight: bold; }
+        .actions a { display: inline-block; background: #1769aa; color: white; padding: 10px 14px; margin: 5px 8px 5px 0; border-radius: 6px; text-decoration: none; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Zapuza | Quality Control</h1>
+    <a href="/admin/">Administration</a>
+</header>
+<main>
+    <h2>Factory Quality Dashboard</h2>
+    <p>Overview of product inspections and production activity.</p>
+
+    <div class="cards">
+        <div class="card"><p>Total Products</p><div class="number">{{ total_products }}</div></div>
+        <div class="card"><p>Total Inspections</p><div class="number">{{ total_inspections }}</div></div>
+        <div class="card"><p>Passed Inspections</p><div class="number pass">{{ passed_inspections }}</div></div>
+        <div class="card"><p>Failed Inspections</p><div class="number fail">{{ failed_inspections }}</div></div>
+        <div class="card"><p>Pending Operations</p><div class="number">{{ pending_operations }}</div></div>
+    </div>
+
+    <section>
+        <h3>Quick Actions</h3>
+        <div class="actions">
+            <a href="/admin/quality/product/add/">Add Product</a>
+            <a href="/admin/quality/inspection/add/">Record Inspection</a>
+            <a href="/admin/quality/productionoperation/add/">Add Operation</a>
+            <a href="/admin/quality/inspectionapproval/add/">Supervisor Decision</a>
+            <a href="/admin/quality/dispatch/add/">Dispatch Record</a>
+        </div>
+    </section>
+
+    <section>
+        <h3>Recent Inspections</h3>
+        <table>
+            <thead><tr><th>Product</th><th>Parameter</th><th>Measured</th><th>Allowed Range</th><th>Result</th></tr></thead>
+            <tbody>
+            {% for item in recent_inspections %}
+                <tr>
+                    <td>{{ item.product.serial_number }}</td>
+                    <td>{{ item.parameter }}</td>
+                    <td>{{ item.measured_value }}</td>
+                    <td>{{ item.min_value }} – {{ item.max_value }}</td>
+                    <td class="{% if item.status == 'PASS' %}pass{% else %}fail{% endif %}">{{ item.status }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">No inspections recorded yet. Use Record Inspection to add one.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>Recent Products</h3>
+        <table>
+            <thead><tr><th>Serial Number</th><th>Product Name</th><th>Created</th></tr></thead>
+            <tbody>
+            {% for product in products %}
+                <tr><td>{{ product.serial_number }}</td><td>{{ product.name }}</td><td>{{ product.created_at|date:"d M Y, H:i" }}</td></tr>
+            {% empty %}
+                <tr><td colspan="3">No products registered yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

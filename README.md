@@ -1,158 +1,132 @@
-
 # Factory Operations & Quality Control System
 
-A full-stack factory operations and quality-control application developed for the Zapuza Technologies assignment.
-
-The application manages product registration, quality inspections, supervisor approvals, production operations, hold periods, and dispatch validation.
+A Django-based factory quality-control application developed for the Zapuza Technologies assignment. The application supports product registration, measurement inspections, supervisor decisions, production operation tracking, and dispatch validation.
 
 ## Features
 
 ### 1. Product Management
 - Register products with unique serial numbers.
-- View registered products and their creation dates.
-- Prevent duplicate serial numbers.
+- View product records and creation dates.
 
 ### 2. Quality Inspections
-- Record measurements for individual products.
-- Define minimum and maximum acceptable values.
-- Automatically determine PASS or FAIL based on the measured value.
-- View inspection history and results.
+- Record product measurements against defined minimum and maximum limits.
+- Automatically classify measurements as `PASS` or `FAIL`.
+- View inspection history through Django Admin.
 
 ### 3. Inspection Approvals
-- Review inspections awaiting a decision.
-- Approve or reject inspections.
-- Record the reviewer and rejection reason.
-- View approval history.
+- Record supervisor approval or rejection for an inspection.
+- Store supervisor details and remarks.
+- Review approval records through Django Admin.
 
 ### 4. Production Operations
-- Configure manufacturing steps and sequence numbers.
-- Start and complete production operations.
-- Enforce operation sequencing.
-- Configure and enforce operation hold periods.
+- Configure operation names and sequence numbers.
+- Track pending, started, and completed operations.
+- Configure hold periods for operations.
 
-### 5. Dispatch Management
-- Review production and inspection readiness.
-- Require all operations to be completed.
-- Require operation hold periods to have elapsed.
-- Require a passing and approved Final PDI inspection.
-- Prevent duplicate dispatches.
-- Record the dispatcher and dispatch time.
+### 5. Dispatch Validation
+- Block dispatch when inspections are missing, failed, unapproved, or rejected.
+- Require production operations to be configured and completed.
+- Block dispatch while a configured hold period has not elapsed.
 
 ### 6. Dashboard
-- View product and inspection summaries.
-- Review production operation progress.
-- Navigate to the main application modules.
+- View product and inspection totals.
+- Review recent inspection results and product records.
+- Navigate to administration forms.
 
 ## Technology Stack
 
-- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
-- **Backend:** Next.js API Routes
-- **ORM:** Prisma
+- **Language:** Python
+- **Framework:** Django 6.1.2
 - **Database:** SQLite
-- **Runtime:** Node.js
+- **Frontend:** Django Templates, HTML, CSS
+- **Testing:** Django automated test framework
 
 ## Prerequisites
 
-Install the following before running the application:
-
-- Node.js
-- npm
+- Python 3.13 or a compatible Python version
+- pip
 
 ## Installation and Setup
 
-### 1. Clone the repository
+Run the commands below from the `django_app` directory.
+
+### 1. Create a virtual environment
 
 ```bash
-git clone <YOUR_PUBLIC_GITHUB_REPOSITORY_URL>
-cd zapuza-quality-system
+python -m venv .venv
 ```
 
-Replace the repository URL with your actual GitHub repository URL.
+Activate it in Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
 ### 2. Install dependencies
 
 ```bash
-npm install
+pip install -r requirements.txt
 ```
 
-### 3. Configure environment variables
-
-Create a `.env` file in the project root:
-
-```env
-DATABASE_URL="file:./dev.db"
-```
-
-Do not commit secrets or private environment variables.
-
-### 4. Set up the database
-
-Apply the committed Prisma migrations:
+### 3. Apply database migrations
 
 ```bash
-npx prisma migrate deploy
-npx prisma generate
+python manage.py migrate
 ```
 
-These commands assume the repository includes the required Prisma migration files.
-
-### 5. Start the development server
+### 4. Create an administrator account
 
 ```bash
-npm run dev
+python manage.py createsuperuser
 ```
 
-Open the application:
-
-http://localhost:3000
-
-## Application Routes
-
-| Route | Description |
-|---|---|
-| `/` | Dashboard |
-| `/products` | Product registration and listing |
-| `/inspections` | Quality inspection recording and history |
-| `/approvals` | Inspection review and decisions |
-| `/operations` | Production operation management |
-| `/dispatch` | Dispatch readiness and authorization |
-
-## Dispatch Validation
-
-Before creating a dispatch record, the backend validates the following conditions:
-
-1. The product exists.
-2. The product has not already been dispatched.
-3. At least one production operation is configured.
-4. Every operation is completed and its hold period has elapsed.
-5. A `Final PDI` inspection exists and has status `PASS`.
-6. The Final PDI inspection has supervisor approval with status `APPROVED`.
-
-Requests that fail these checks are rejected by the dispatch API.
-
-## Validation and Testing
-
-Run the TypeScript check:
+### 5. Run the development server
 
 ```bash
-npx tsc --noEmit
+python manage.py runserver
 ```
 
-Manually test the main workflows:
+Open the dashboard at http://127.0.0.1:8000/ and the administration interface at http://127.0.0.1:8000/admin/.
 
-- Register a product and verify duplicate serial numbers are rejected.
-- Record passing and failing inspections.
-- Approve and reject inspections.
-- Verify production operation sequence enforcement.
-- Verify hold-time restrictions.
-- Verify dispatch rejection when requirements are incomplete.
-- Verify successful dispatch for an eligible product.
-- Verify that a product cannot be dispatched twice.
+## Automated Tests
+
+Run:
+
+```bash
+python manage.py test quality
+```
+
+**Latest verified result:** 7 tests passed.
+
+The automated tests cover inspection PASS/FAIL classification, dispatch blocking for failed or unapproved inspections, missing or incomplete production operations, and hold-period validation.
+
+## Project Structure
+
+```text
+django_app/
+├── config/
+├── quality/
+│   ├── migrations/
+│   ├── templates/
+│   │   └── quality/
+│   │       └── dashboard.html
+│   ├── admin.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── manage.py
+└── requirements.txt
+```
 
 ## Limitations
 
-This is an assignment implementation. Authentication, role-based authorization, production deployment hardening, and any additional workflows required by the complete assignment specification should be assessed before production use.
+This implementation covers selected quality-control workflows and does not claim to implement every requirement in the original Business Requirements Document. Further work may be required for dedicated workflow forms, role-based permissions, enforcement of the required Final PDI inspection, and complete workflow sequencing.
+
+## Demo Video
+
+Add the link to your recorded project walkthrough before submission.
 
 ## Author
 
-Add your name and relevant contact information before submission.
+U J Krishna
